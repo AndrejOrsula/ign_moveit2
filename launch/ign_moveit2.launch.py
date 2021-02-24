@@ -26,7 +26,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'config_rviz2',
             default_value=config_rviz2,
-            description="Path to config for RViz2"),
+            description="Path to config for RViz2. If empty, RViz2 will be disabled"),
         DeclareLaunchArgument(
             'log_level',
             default_value=log_level,
@@ -67,6 +67,16 @@ def generate_launch_description():
              name='parameter_bridge_joint_trajectory',
              output='screen',
              arguments=['/joint_trajectory@trajectory_msgs/msg/JointTrajectory]ignition.msgs.JointTrajectory',
+                        '--ros-args', '--log-level', log_level],
+             parameters=[{'use_sim_time': use_sim_time}]),
+
+        # JointTrajectory bridge for gripper (ROS2 -> IGN)
+        # TODO: Find a better way of bridging separate gripper trajectories if it is enabled
+        Node(package='ros_ign_bridge',
+             executable='parameter_bridge',
+             name='parameter_bridge_gripper_trajectory',
+             output='screen',
+             arguments=['/gripper_trajectory@trajectory_msgs/msg/JointTrajectory]ignition.msgs.JointTrajectory',
                         '--ros-args', '--log-level', log_level],
              parameters=[{'use_sim_time': use_sim_time}]),
 
